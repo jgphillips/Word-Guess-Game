@@ -1,0 +1,28 @@
+<!DOCTYPE <!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Word Guess Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
+    <script src="./assets/javascript/game.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        var word = "batman";
+        //function checkLetter()
+        document.onkeyup = function(event)
+        {
+            var inputLetter = event.key;
+            if (word.includes(inputLetter,0)){
+                console.log("You guessed right!");
+            }
+            else{
+                console.log("You guessed wrong");
+            }
+        }
+    </script>
+    
+</body>
+</html>
