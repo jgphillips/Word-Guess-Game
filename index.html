@@ -6,22 +6,151 @@
     <title>Word Guess Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <script src="./assets/javascript/game.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
+    <div class="jumbotron">
+        <div class="shadow p-3 mb-5 bg-white rounded">
+            <h1 class="text-center">Word Guess Game</h1>
+            <h3 class="text-center">Jameel's Categories</h3>
+        </div>
+        <button id="gameStart" type="button" class="btn btn-primary">Start Game!</button>
+    </div>
+    <div class="container">
+        <div class="row" id="questionRow"></div>
+        <div class="col-lg-12" id="questionRow">
+            <h3 class="col-lg-6" id="questionDisplay">The Question will be displayed here!</h3>
+        </div>
+    
+        <div class="row" id="wordRow"></div>
+        <div class="col-lg-12" id="wordRow"></div>
+            <h3 class="col-lg-6" id="wordDisplay">_ _ _ _ _ _ _</h3>
+            <div class="col-lg-6" id="correctGuess"></div>
+        
+        
+        <div class="row" id="incorrectRow"></div>
+            <div class="col-lg-12" id="incorrectRow">
+                <h3 class"col-lg-6" id="incorrectDisplay">Start guessing!</h3>
+                <div class="col-lg-6" id="incorrectGuess"></div>
+            </div>
+    </div>
+
     <script type="text/javascript">
-        var word = "batman";
-        //function checkLetter()
-        document.onkeyup = function(event)
-        {
-            var inputLetter = event.key;
-            if (word.includes(inputLetter,0)){
-                console.log("You guessed right!");
-            }
-            else{
-                console.log("You guessed wrong");
-            }
-        }
+    $(document).ready(function() {
+        
+            var question = ["What DC Character is the world's greatest detective?",
+            "Who is the best Marvel super hero?",
+            "Name a Swedish luxury vehicle manufacturer established in 1927",
+            "Who has a house too small for guests?"];
+
+            var word = ["Batman", "Spider-Man", "Volvo", "Turtle"];
+            
+            //function checkLetter()
+            $("#gameStart").on("click", function(){
+                clearAll();
+                var lives = 6;
+                var incorrectCount=0;
+                var correctCount=0;
+                var count = Math.floor(Math.random()*question.length);
+                var string = "";
+                var sentence = "Hello World";
+                console.log(count);
+                console.log(word[count]);
+                $("#questionDisplay").text(question[count]);
+                initialDisplay(word[count].length);
+                document.onkeyup = function(event){
+                    var inputLetter = event.key;
+                    console.log (inputLetter); 
+                    console.log(letterGuess(inputLetter, word[count]));
+                    
+                    if(letterGuess(inputLetter, word[count]) == true){
+                        //if($("#incorrectDisplay").text().toLocaleLowerCase().indexOf(inputLetter)>-1){
+                            //console.log("same")
+                        //}
+                        console.log("You guessed right!")
+                        var correctIndex = letterDisplay(word[count],inputLetter);
+                        for(i=0; (i<correctIndex.length); i++){
+                            sentence[correctIndex[i]]=inputLetter;
+                        }
+                        console.log("input: " + inputLetter);
+                        console.log(string.length);
+                        console.log(string);
+                        $("#wordDisplay").text(sentence);
+                        correctCount++;
+                        $("#incorrectGuess").text("Nice Job! You have guessed " +correctCount+ " letters. You have " + lives + " left.");  
+                    }
+                    else if($("#incorrectDisplay").text().indexOf(inputLetter) > -1){
+                        console.log("You already guess this! Try Again!")
+                        $("#incorrectGuess").text("You already guess this! Try Again! You have " + lives + " left.");
+                    }
+                    else if (lives <1){
+                        $("#questionDisplay").text("GAME OVER!");
+                        $("#wordDisplay").text("");
+                        $("#incorrectDisplay").text("");
+                        $("#incorrectGuess").text("");
+                    }
+                    else if(correctCount == word[count].length){
+                        $("#questionDisplay").text("CONGRATULATIONS! YOU WIN!");
+                        $("#wordDisplay").text("");
+                        $("#incorrectDisplay").text("");
+                        $("#incorrectGuess").text("");
+                    }
+                    else/*if(letterGuess(inputLetter, word[count]) == false){*/{
+                        console.log("You guessed wrong!")
+                        incorrectCount++;
+                        lives--;
+                        $("#incorrectDisplay").append(inputLetter +", ");
+                        console.log(incorrectCount);
+                        $("#incorrectGuess").text("You have made "+ incorrectCount + " incorrect guesses. You have " + lives + " left.");
+
+                        console.log($("#incorrectGuess").text());
+                    }    
+                }
+                function letterGuess(a, b){
+                        var wored = b;
+                        var letter = a;
+                            if (b.toLocaleLowerCase().indexOf(a)>-1){
+                                return(true);
+                            }
+                            else{
+                                return(false);    
+                            }
+                    }
+                        
+                    function initialDisplay(a){
+                        for(var i=0; i<a; i++){
+                            string += "_";
+                        }
+                        $("#wordDisplay").text(string);
+                    }
+
+                    function letterDisplay(word, letter){
+                        var indices = [];
+                        var array = word.toLocaleLowerCase();
+                        var element = letter;
+                        var idx = array.indexOf(element);
+                        while (idx != -1) {
+                            indices.push(idx);
+                            idx = array.indexOf(element, idx + 1);
+                        }
+                        return indices;                   
+                    }
+
+                    function clearAll() {
+                        lives = 0;
+                        string = 0;
+                        count = 0;
+                        incorrectCount=0;
+                        correctCount=0;
+                        $("#questionDisplay").text("");
+                        $("#wordDisplay").text("");
+                        $("#incorrectDisplay").text("");
+                        $("#incorrectGuess").text("");
+                    }            
+            });
+        });
     </script>
     
 </body>
